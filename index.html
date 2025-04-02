@@ -14,45 +14,56 @@
       <div class="product-display">
         <div class="product-container">
           <div class="product-image">
-            <img :src="image1" alt="img-product" />
-            <h1>T-Shirt</h1>
-            <p v-if="inStock >= 10">In Stock</p>
-            <p v-else-if="inStock < 10 && inStock > 0">Almost out of Stock</p>
-            <p v-else>Out of Stock</p>
-            <ul>
-              <li v-for="detail in details">{{ detail }}/li></li>
-            </ul>
-
-            <img :src="image2" alt="img-product" />
-            <h1>T-Shirt</h1>
-            <p v-if="inStock >= 10">In Stock</p>
-            <p v-else-if="inStock < 10 && inStock > 0">Almost out of Stock</p>
-            <p v-else>Out of Stock</p>
-            <ul>
-              <li v-for="detail in details">{{ detail }}/li></li>
-            </ul>
+            <img :src="image" alt="img-product" />
           </div>
           <!--Imagem do Produto-->
           <div class="product-info">
             <h1>{{ product_title }}</h1>
+
+            <p v-if="inStock >= 10">In Stock</p>
+            <p v-else-if="inStock < 10 && inStock > 0">Almost out of Stock</p>
+            <p v-else>Out of Stock</p>
+            <ul>
+              <li v-for="detail in details">{{ detail }}/li></li>
+            </ul>
+            <div
+              v-for="variant in variants"
+              :key="variant.id"
+              @mouseover="changeImage"
+            >
+              {{ variant.color }}
+            </div>
+            <button class="button">Add to Cart</button>
           </div>
+          <div class="cart" @click="addToCart">Cart: {{ cart }}</div>
           <!--Info do Produto-->
         </div>
       </div>
     </div>
 
     <script>
-      const { createApp, ref } = Vue;
+      const { createApp, ref } = Vue; 
 
       createApp({
         setup() {
+          const cart = ref(0);
+          const addToCart = () => {
+            cart.value += 1;
+          };
+          const image = ref ("assets/images/t-shirt-blue.png");
+          const changeImage = (variantImage) => image.value = variantImage;
           return {
             product_title: ref("T-Shirt"),
-            image1: ref("assets/images/t-shirt-blue.png"),
-            image2: ref("assets/images/t-shirt-green.png"),
+            image,
             inStock: ref(10),
             details: ["50% Cotton", "30% Polyester", "20% Wool"],
-            variants: [{id: 1, color: 'blue'}, {id:1, color: 'green'}]
+            variants: [
+              { id: 1, color: "blue", image: ("assets/images/t-shirt-blue.png")},
+              { id: 1, color: "green", image: ("assets/images/t-shirt-green.png")},
+            ],
+            cart: ref(0),
+            addToCart,
+            changeImage
           };
         },
       }).mount("#app");
